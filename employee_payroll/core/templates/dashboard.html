@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+  <div class="col-md-4">
+    <div class="card"><div class="card-body">
+      <h6 class="text-muted">Employees</h6>
+      <h2>{{ emp_count }}</h2>
+    </div></div>
+  </div>
+  <div class="col-md-4">
+    <div class="card"><div class="card-body">
+      <h6 class="text-muted">Present Today</h6>
+      <h2>{{ present_today }}</h2>
+    </div></div>
+  </div>
+  <div class="col-md-4">
+    <div class="card"><div class="card-body">
+      <h6 class="text-muted">Last Payroll Period</h6>
+      <h2>{% if last_period %}{{ last_period.month }}/{{ last_period.year }}{% else %}-{% endif %}</h2>
+    </div></div>
+  </div>
+</div>
+{% endblock %}

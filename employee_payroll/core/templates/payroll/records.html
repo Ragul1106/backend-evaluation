@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Payroll {{ period.month }}/{{ period.year }}</h4>
+  <a class="btn btn-outline-secondary" href="{% url 'payroll_export_excel' period.id %}">Export Excel</a>
+</div>
+<div class="table-responsive">
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Code</th><th>Name</th>
+      <th>Basic</th><th>HRA</th><th>Allow.</th><th>OT</th>
+      <th>PF</th><th>ESI</th><th>Tax</th><th>LOP</th>
+      <th>Gross</th><th>Net</th><th>Payslip</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for r in records %}
+    <tr>
+      <td>{{ r.employee.code }}</td>
+      <td>{{ r.employee.first_name }} {{ r.employee.last_name }}</td>
+      <td>{{ r.basic }}</td>
+      <td>{{ r.hra }}</td>
+      <td>{{ r.allowances }}</td>
+      <td>{{ r.overtime_pay }}</td>
+      <td>{{ r.pf }}</td>
+      <td>{{ r.esi }}</td>
+      <td>{{ r.tax }}</td>
+      <td>{{ r.lop }}</td>
+      <td>{{ r.gross }}</td>
+      <td>{{ r.net }}</td>
+      <td><a class="btn btn-sm btn-outline-primary" href="{% url 'payroll_payslip_pdf' r.id %}">PDF</a></td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="13">No records</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

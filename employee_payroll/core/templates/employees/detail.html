@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h4>{{ emp.first_name }} {{ emp.last_name }} ({{ emp.code }})</h4>
+<ul class="list-group">
+  <li class="list-group-item">Email: {{ emp.email }}</li>
+  <li class="list-group-item">Phone: {{ emp.phone }}</li>
+  <li class="list-group-item">Department: {{ emp.department }}</li>
+  <li class="list-group-item">Designation: {{ emp.designation }}</li>
+  <li class="list-group-item">Base Salary: {{ emp.base_salary }}</li>
+  <li class="list-group-item">Hourly Rate: {{ emp.hourly_rate }}</li>
+  <li class="list-group-item">Bank: {{ emp.bank_name }} / {{ emp.account_no }} / {{ emp.ifsc }}</li>
+  <li class="list-group-item">PAN: {{ emp.pan }} | UAN: {{ emp.uan }}</li>
+</ul>
+{% endblock %}

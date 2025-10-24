@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h4>{{ form.instance.pk|yesno:"Edit Attendance,New Attendance" }}</h4>
+<form method="post" class="row g-3">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <div><button class="btn btn-primary">Save</button></div>
+</form>
+{% endblock %}

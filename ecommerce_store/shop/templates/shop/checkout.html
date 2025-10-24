@@ -1,0 +1,95 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+<h2>Checkout</h2>
+
+{% if order %}
+  <p>Order #{{ order.invoice_number }} — ₹{{ order.total_amount }}</p>
+
+  <!-- Razorpay checkout integration -->
+  <button id="rzpay-btn">Pay with Razorpay</button>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    document.getElementById('rzpay-btn').addEventListener('click', async function() {
+      try {
+        const resp = await fetch("{% url 'shop:razorpay_create_order' %}", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+          },
+          body: JSON.stringify({ order_id: '{{ order.id }}' })
+        });
+
+        const data = await resp.json();
+        if (!data.razorpay_order_id) {
+          alert('Failed to create Razorpay order.');
+          return;
+        }
+
+        const options = {
+          key: data.key,
+          amount: data.amount,
+          currency: "INR",
+          name: "{{ settings.SITE_NAME }}",
+          description: "Order Payment",
+          order_id: data.razorpay_order_id,
+          handler: function (response) {
+            // Create hidden form to verify payment on the server
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = "{% url 'shop:razorpay_verify' %}";
+
+            const csrf = document.createElement('input');
+            csrf.type = 'hidden';
+            csrf.name = 'csrfmiddlewaretoken';
+            csrf.value = '{{ csrf_token }}';
+            form.appendChild(csrf);
+
+            const fields = {
+              'razorpay_payment_id': response.razorpay_payment_id,
+              'razorpay_order_id': response.razorpay_order_id,
+              'razorpay_signature': response.razorpay_signature
+            };
+
+            for (const name in fields) {
+              const input = document.createElement('input');
+              input.type = 'hidden';
+              input.name = name;
+              input.value = fields[name];
+              form.appendChild(input);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+          },
+          prefill: {
+            name: "{{ order.fullname }}",
+            email: "{{ order.email }}",
+            contact: "{{ order.phone }}"
+          },
+          theme: {
+            color: "#3399cc"
+          }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+
+      } catch (error) {
+        console.error('Error initiating Razorpay payment:', error);
+        alert('Something went wrong while starting payment.');
+      }
+    });
+  </script>
+
+{% else %}
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Order</button>
+  </form>
+{% endif %}
+{% endblock %}

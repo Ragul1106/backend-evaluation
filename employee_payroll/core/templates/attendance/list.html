@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Attendance</h4>
+  <div>
+    <a class="btn btn-outline-secondary" href="{% url 'attendance_export_excel' %}?month={{ month }}&year={{ year }}{% if selected_employee %}&employee={{ selected_employee }}{% endif %}">Export Excel</a>
+    <a class="btn btn-primary" href="{% url 'attendance_bulk' %}">Bulk Mark</a>
+    <a class="btn btn-success" href="{% url 'attendance_create' %}">Add</a>
+  </div>
+</div>
+<form class="row g-2 mb-3">
+  <div class="col-auto">
+    <select class="form-select" name="employee">
+      <option value="">All Employees</option>
+      {% for e in employees %}
+        <option value="{{ e.id }}" {% if selected_employee|default:''|stringformat:"s" == e.id|stringformat:"s" %}selected{% endif %}>{{ e.code }} - {{ e.first_name }} {{ e.last_name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-auto"><input class="form-control" name="month" type="number" min="1" max="12" value="{{ month }}"></div>
+  <div class="col-auto"><input class="form-control" name="year" type="number" value="{{ year }}"></div>
+  <div class="col-auto"><button class="btn btn-outline-secondary">Filter</button></div>
+</form>
+<div class="table-responsive">
+<table class="table table-striped">
+  <thead><tr>
+    <th>Emp</th><th>Date</th><th>Status</th><th>Check In</th><th>Check Out</th><th>Hours</th><th>OT</th><th></th>
+  </tr></thead>
+  <tbody>
+  {% for a in attendances %}
+    <tr>
+      <td>{{ a.employee.code }}</td>
+      <td>{{ a.date }}</td>
+      <td>{{ a.status }}</td>
+      <td>{{ a.check_in }}</td>
+      <td>{{ a.check_out }}</td>
+      <td>{{ a.work_hours }}</td>
+      <td>{{ a.overtime_hours }}</td>
+      <td><a class="btn btn-sm btn-outline-primary" href="{% url 'attendance_edit' a.id %}">Edit</a></td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="8">No records</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+<nav>
+  <ul class="pagination">
+    {% if attendances.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page={{ attendances.previous_page_number }}">Prev</a></li>
+    {% endif %}
+    <li class="page-item active"><span class="page-link">{{ attendances.number }}</span></li>
+    {% if attendances.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ attendances.next_page_number }}">Next</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock %}

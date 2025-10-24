@@ -1,0 +1,133 @@
+/* Modern minimal E-Commerce styling */
+:root {
+  --bg: #f7f8fb;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --accent: #5b21b6;
+  --maxw: 1100px;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--bg);
+  color: #111827;
+  margin: 0;
+  padding: 24px;
+}
+
+/* layout */
+.container {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 12px;
+}
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+.brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.brand h1 {
+  font-size: 20px;
+  margin: 0;
+  color: var(--accent);
+}
+.nav a {
+  color: var(--accent);
+  text-decoration: none;
+  margin-left: 12px;
+}
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+.card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 6px 18px rgba(14, 18, 32, 0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.card img {
+  width: 100%;
+  height: 260px;                  
+  object-fit: contain;            
+  background-color: #f2f3f7;      
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+.card h3 {
+  margin: 4px 0;
+  font-size: 16px;
+  text-align: center;
+}
+.card p {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 6px 0 8px;
+  text-align: center;
+}
+.card .price {
+  font-weight: 600;
+  margin-top: 6px;
+  font-size: 15px;
+  color: #111;
+}
+
+/* buttons */
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  justify-content: center;
+}
+.btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 0;
+  font-size: 14px;
+}
+.btn-primary {
+  background: var(--accent);
+  color: white;
+}
+.btn-outline {
+  background: transparent;
+  border: 1px solid #e6e7eb;
+  color: #111;
+}
+
+/* empty state */
+.empty {
+  padding: 36px;
+  text-align: center;
+  color: var(--muted);
+  background: linear-gradient(180deg, #fff, #fafafa);
+  border-radius: 8px;
+}
+
+/* footer */
+footer {
+  margin-top: 40px;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}

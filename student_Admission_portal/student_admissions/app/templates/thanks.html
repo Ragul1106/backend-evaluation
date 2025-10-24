@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Application Received</h2>
+  <p>Thank you {{ applicant.full_name }}. Your application ID is {{ applicant.id }}.</p>
+  <p>We will notify you via email and SMS.</p>
+{% endblock %}

@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><style>
+body { font-family: DejaVu Sans, Arial, sans-serif; font-size: 12px; }
+.header { display:flex; justify-content:space-between; }
+.table { width:100%; border-collapse: collapse; margin-top:10px; }
+.table th, .table td { border:1px solid #333; padding:6px; }
+</style></head>
+<body>
+<div class="header">
+  <div>
+    <h2>{{ company_name }}</h2>
+    <div>{{ company_address }}</div>
+    <div>GSTIN: {{ company_gstin }}</div>
+  </div>
+  <div>
+    <h3>Tax Invoice</h3>
+    <div>Invoice: {{ order.invoice_number }}</div>
+    <div>Date: {{ order.created_at|date:"d-m-Y" }}</div>
+  </div>
+</div>
+
+<hr/>
+<div>
+  <strong>Bill To:</strong><br/>
+  {{ order.fullname }}<br/>
+  {{ order.address }}<br/>
+  {{ order.city }} - {{ order.zipcode }}<br/>
+  Phone: {{ order.phone }}<br/>
+  Email: {{ order.email }}<br/>
+</div>
+
+<table class="table">
+  <thead><tr><th>#</th><th>Item</th><th>HSN</th><th>Qty</th><th>Rate</th><th>Tax%</th><th>Tax</th><th>Total</th></tr></thead>
+  <tbody>
+  {% for item in order.items.all %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ item.product.name }}</td>
+      <td>--</td>
+      <td>{{ item.quantity }}</td>
+      <td>{{ item.price }}</td>
+      <td>{{ item.gst_percent }}</td>
+      <td>{{ item.tax_amount|floatformat:2 }}</td>
+      <td>{{ item.total_price_excl_tax|floatformat:2 }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<p><strong>Total: ₹{{ order.total_amount|floatformat:2 }}</strong></p>
+</body>
+</html>

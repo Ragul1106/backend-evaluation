@@ -1,0 +1,32 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ settings.SITE_NAME|default:"Shop" }}</title>
+  <link rel="stylesheet" href="{% static 'store/styles.css' %}">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <h1>{{ settings.SITE_NAME|default:"Shop" }}</h1>
+        <div style="color:var(--muted);font-size:13px;">— {{ company_name|default:"Your Company" }}</div>
+      </div>
+      <nav class="nav">
+        <a href="{% url 'shop:product_list' %}">Home</a>
+        <a href="{% url 'shop:cart' %}">Cart</a>
+      </nav>
+    </header>
+
+    <main class="main-grid">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+      &copy; {{ company_name|default:settings.SITE_NAME }}. All rights reserved.
+    </footer>
+  </div>
+</body>
+</html>

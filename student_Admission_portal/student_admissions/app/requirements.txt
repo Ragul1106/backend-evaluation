@@ -1,0 +1,14 @@
+Flask>=2.1
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-WTF
+WTForms
+Flask-Login
+Flask-Mail
+python-dotenv
+twilio
+email-validator
+gunicorn
+psycopg2-binary
+Flask-Cors
+requests

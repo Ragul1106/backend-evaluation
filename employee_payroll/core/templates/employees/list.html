@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Employees</h4>
+  <a class="btn btn-primary" href="{% url 'employee_create' %}">Add</a>
+</div>
+<form class="row g-2 mb-3">
+  <div class="col-auto"><input name="q" class="form-control" placeholder="Search" value="{{ q }}"></div>
+  <div class="col-auto"><button class="btn btn-outline-secondary">Search</button></div>
+</form>
+<div class="table-responsive">
+<table class="table table-striped">
+  <thead><tr>
+    <th>Code</th><th>Name</th><th>Dept</th><th>Desig</th><th>Salary</th><th></th>
+  </tr></thead>
+  <tbody>
+  {% for e in employees %}
+    <tr>
+      <td>{{ e.code }}</td>
+      <td><a href="{% url 'employee_detail' e.id %}">{{ e.first_name }} {{ e.last_name }}</a></td>
+      <td>{{ e.department }}</td>
+      <td>{{ e.designation }}</td>
+      <td>{{ e.base_salary }}</td>
+      <td>
+        <a class="btn btn-sm btn-outline-primary" href="{% url 'employee_edit' e.id %}">Edit</a>
+        <a class="btn btn-sm btn-outline-danger" href="{% url 'employee_delete' e.id %}">Delete</a>
+      </td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="6">No employees</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+<nav>
+  <ul class="pagination">
+    {% if employees.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page={{ employees.previous_page_number }}&q={{ q }}">Prev</a></li>
+    {% endif %}
+    <li class="page-item active"><span class="page-link">{{ employees.number }}</span></li>
+    {% if employees.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ employees.next_page_number }}&q={{ q }}">Next</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock %}

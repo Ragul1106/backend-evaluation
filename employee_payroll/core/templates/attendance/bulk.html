@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<h4>Bulk Attendance</h4>
+<form method="post" class="mb-3">
+  {% csrf_token %}
+  <div class="row g-2">
+    <div class="col-auto">{{ form.date }}</div>
+    <div class="col-auto"><button class="btn btn-primary">Load & Save</button></div>
+  </div>
+  <div class="table-responsive mt-3">
+    <table class="table table-bordered">
+      <thead>
+        <tr><th>Code</th><th>Name</th><th>Status</th><th>Check In</th><th>Check Out</th></tr>
+      </thead>
+      <tbody>
+        {% for e in employees %}
+          <tr>
+            <td>{{ e.code }}</td>
+            <td>{{ e.first_name }} {{ e.last_name }}</td>
+            <td>
+              <select class="form-select" name="status_{{ e.id }}">
+                <option value="PRESENT">PRESENT</option>
+                <option value="LATE">LATE</option>
+                <option value="HALF_DAY">HALF_DAY</option>
+                <option value="ABSENT">ABSENT</option>
+              </select>
+            </td>
+            <td><input class="form-control" name="check_in_{{ e.id }}" type="time"></td>
+            <td><input class="form-control" name="check_out_{{ e.id }}" type="time"></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</form>
+{% endblock %}

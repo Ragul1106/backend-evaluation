@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Apply Now</h2>
+  <form method="post" action="{{ url_for('main.apply') }}">
+    {{ form.hidden_tag() }}
+    <p>{{ form.full_name.label }} {{ form.full_name() }}</p>
+    <p>{{ form.email.label }} {{ form.email() }}</p>
+    <p>{{ form.phone.label }} {{ form.phone() }}</p>
+    <p>{{ form.dob.label }} {{ form.dob() }} (YYYY-MM-DD)</p>
+    <p>{{ form.course.label }} {{ form.course() }}</p>
+    <p>{{ form.address.label }} {{ form.address() }}</p>
+    <p>{{ form.submit() }}</p>
+  </form>
+{% endblock %}

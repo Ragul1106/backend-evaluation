@@ -1,0 +1,28 @@
+[
+  {
+    "model": "shop.category",
+    "pk": 1,
+    "fields": {
+      "name": "Gadgets",
+      "slug": "gadgets",
+      "description": "Electronic gadgets"
+    }
+  },
+  {
+    "model": "shop.product",
+    "pk": 1,
+    "fields": {
+      "category": 1,
+      "name": "Smart Watch X",
+      "slug": "smart-watch-x",
+      "description": "Fitness watch",
+      "price": "2499.00",
+      "gst_percent": "18.00",
+      "stock": 10,
+      "image": ""   
+    }
+  }
+]
+
+
+

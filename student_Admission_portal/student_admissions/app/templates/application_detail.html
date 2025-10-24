@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Application {{ applicant.id }}</h2>
+<p><strong>Name:</strong> {{ applicant.full_name }}</p>
+<p><strong>Email:</strong> {{ applicant.email }}</p>
+<p><strong>Phone:</strong> {{ applicant.phone }}</p>
+<p><strong>Course:</strong> {{ applicant.course }}</p>
+<p><strong>Address:</strong><br/>{{ applicant.address }}</p>
+<p><strong>Status:</strong> {{ applicant.status }}</p>
+
+<form method="post" action="{{ url_for('admin.application_update', app_id=applicant.id) }}">
+  <textarea name="comment" placeholder="Admin comment (optional)"></textarea><br>
+  <button name="action" value="approve" type="submit">Approve</button>
+  <button name="action" value="reject" type="submit">Reject</button>
+</form>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Admin Dashboard — {{ status|capitalize }} applications</h2>
+<nav>
+  <a href="{{ url_for('admin.dashboard', status='pending') }}">Pending</a> |
+  <a href="{{ url_for('admin.dashboard', status='approved') }}">Approved</a> |
+  <a href="{{ url_for('admin.dashboard', status='rejected') }}">Rejected</a> |
+  <a href="{{ url_for('admin.logout') }}">Logout</a>
+</nav>
+<table>
+  <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Course</th><th>Applied On</th><th>Action</th></tr></thead>
+  <tbody>
+  {% for a in applicants %}
+    <tr>
+      <td>{{ a.id }}</td>
+      <td>{{ a.full_name }}</td>
+      <td>{{ a.email }}</td>
+      <td>{{ a.course }}</td>
+      <td>{{ a.applied_on.strftime('%Y-%m-%d') }}</td>
+      <td><a href="{{ url_for('admin.application_detail', app_id=a.id) }}">View</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

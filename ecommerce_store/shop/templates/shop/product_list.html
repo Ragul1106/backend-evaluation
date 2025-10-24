@@ -1,0 +1,32 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+<h2>Products{% if category %} — {{ category.name }}{% endif %}</h2>
+
+{% if products %}
+  <div class="products" role="list">
+  {% for p in products %}
+    <div class="card" role="listitem">
+      {% if p.image %}
+        <img src="{{ p.image.url }}" alt="{{ p.name }}">
+      {% else %}
+        <img src="https://via.placeholder.com/300x150?text=Product" alt="{{ p.name }}">
+      {% endif %}
+      <h3><a href="{{ p.get_absolute_url }}">{{ p.name }}</a></h3>
+      <p>{{ p.description|truncatechars:80 }}</p>
+      <div class="price">₹{{ p.price }}</div>
+      <div class="actions">
+        <form action="{% url 'shop:cart_add' p.id %}" method="post" style="display:inline;">{% csrf_token %}
+          <button class="btn btn-primary" type="submit">Add to cart</button>
+        </form>
+        <a class="btn btn-outline" href="{{ p.get_absolute_url }}">Details</a>
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+{% else %}
+  <div class="empty">
+    <p>No products found yet.</p>
+    <p><small>Run <code>python manage.py seed_store</code> to create sample products or add products via /admin/</small></p>
+  </div>
+{% endif %}
+{% endblock %}
