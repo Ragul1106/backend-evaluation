@@ -1,0 +1,32 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h2>Student: {{ student }}</h2>
+<h4>Roll: {{ student.roll_no }}</h4>
+<p>Courses:
+  {% for c in student.courses.all %} {{ c.code }} - {{ c.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+</p>
+
+<h3>Marks</h3>
+<table class="table table-sm">
+  <thead><tr><th>Exam</th><th>Course</th><th>Marks</th></tr></thead>
+  <tbody>
+    {% for m in marks %}
+      <tr><td>{{ m.exam.name }}</td><td>{{ m.exam.course }}</td><td>{{ m.marks_obtained }}</td></tr>
+    {% empty %}
+      <tr><td colspan="3">No marks recorded.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h3>Attendance (recent)</h3>
+<table class="table table-sm">
+  <thead><tr><th>Date</th><th>Course</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for a in attendance %}
+      <tr><td>{{ a.date }}</td><td>{{ a.course }}</td><td>{{ a.present|yesno:"Present,Absent" }}</td></tr>
+    {% empty %}
+      <tr><td colspan="3">No attendance records.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

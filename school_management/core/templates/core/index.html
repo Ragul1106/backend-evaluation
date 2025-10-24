@@ -1,0 +1,12 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h1>Welcome to School Management</h1>
+<p>Courses</p>
+<ul>
+  {% for c in courses %}
+    <li>{{ c.code }} - {{ c.name }} ({{ c.teacher }})</li>
+  {% empty %}
+    <li>No courses yet. Use admin to add.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

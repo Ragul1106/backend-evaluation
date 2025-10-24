@@ -1,0 +1,23 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h2>Parent Dashboard</h2>
+{% for d in children_data %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">{{ d.student }}</h5>
+      <p>Roll: {{ d.student.roll_no }}</p>
+      <p>Attendance %: {% if d.attendance_pct is not None %}{{ d.attendance_pct|floatformat:1 }}%{% else %}N/A{% endif %}</p>
+      <h6>Marks:</h6>
+      <ul>
+        {% for m in d.marks %}
+          <li>{{ m.exam.course }} - {{ m.exam.name }}: {{ m.marks_obtained }}</li>
+        {% empty %}
+          <li>No marks yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% empty %}
+  <p>No children linked to this parent account.</p>
+{% endfor %}
+{% endblock %}

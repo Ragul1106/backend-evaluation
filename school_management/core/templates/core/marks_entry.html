@@ -1,0 +1,20 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h2>Marks entry</h2>
+<form method="post">{% csrf_token %}
+  {{ form.as_p }}
+  <button class="btn btn-success">Save Marks</button>
+</form>
+
+<h4 class="mt-3">Recent Marks</h4>
+<table class="table table-sm">
+  <thead><tr><th>Exam</th><th>Student</th><th>Marks</th></tr></thead>
+  <tbody>
+    {% for m in recent %}
+      <tr><td>{{ m.exam }}</td><td>{{ m.student }}</td><td>{{ m.marks_obtained }}</td></tr>
+    {% empty %}
+      <tr><td colspan="3">No marks recorded</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
