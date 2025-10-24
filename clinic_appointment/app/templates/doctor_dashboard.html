@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Welcome, Dr. {{ current_user.name }}</h3>
+
+<table class="table table-bordered">
+  <thead class="table-light">
+    <tr>
+      <th>Patient</th>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for a in appointments %}
+    <tr>
+      <td>{{ a.patient_name }}</td>
+      <td>{{ a.date }}</td>
+      <td>{{ a.time }}</td>
+      <td>{{ a.status }}</td>
+      <td>
+        <form method="POST" action="{{ url_for('doctor.update_appointment', id=a.id) }}">
+          <button name="action" value="confirm" class="btn btn-sm btn-success">Confirm</button>
+          <button name="action" value="cancel" class="btn btn-sm btn-danger">Cancel</button>
+        </form>
+      </td>
+    </tr>
+  {% else %}
+    <tr><td colspan="5">No appointments yet.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<a href="{{ url_for('doctor.logout') }}" class="btn btn-secondary">Logout</a>
+{% endblock %}

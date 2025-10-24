@@ -1,0 +1,11 @@
+Dear {{ appointment.patient_name }},
+
+Your appointment with Dr. {{ appointment.doctor.name }} has been received.
+
+Date: {{ appointment.date }}
+Time: {{ appointment.time }}
+
+We'll send you a reminder before your visit.
+
+Thank you,
+Clinic Team

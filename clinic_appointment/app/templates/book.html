@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Book Appointment</h2>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">
+        {{ form.patient_name.label }} {{ form.patient_name(class="form-control") }}
+    </div>
+    <div class="mb-3">
+        {{ form.patient_email.label }} {{ form.patient_email(class="form-control") }}
+    </div>
+    <div class="mb-3">
+        {{ form.patient_phone.label }} {{ form.patient_phone(class="form-control") }}
+    </div>
+    <div class="mb-3">
+        {{ form.doctor_id.label }} {{ form.doctor_id(class="form-select") }}
+    </div>
+    <div class="mb-3">
+        {{ form.date.label }} {{ form.date(class="form-control") }}
+    </div>
+    <div class="mb-3">
+        {{ form.time.label }} {{ form.time(class="form-control") }}
+    </div>
+
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+{% endblock %}

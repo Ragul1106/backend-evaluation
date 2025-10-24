@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="alert alert-success">
+  <h4>Thank you, {{ appointment.patient_name }}!</h4>
+  <p>Your appointment with <strong>{{ appointment.doctor.name }}</strong> has been received.</p>
+  <p><strong>Date:</strong> {{ appointment.date }} <strong>Time:</strong> {{ appointment.time }}</p>
+  <p>We'll send a reminder before your visit.</p>
+  <a href="{{ url_for('main.index') }}" class="btn btn-primary mt-3">Back to Home</a>
+</div>
+{% endblock %}
