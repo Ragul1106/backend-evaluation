@@ -1,0 +1,12 @@
+[
+  {
+    "model": "accounts.employerprofile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "company_name": "TechCorp Solutions",
+      "location": "Bangalore, India",
+      "website": "https://techcorp.com"
+    }
+  }
+]

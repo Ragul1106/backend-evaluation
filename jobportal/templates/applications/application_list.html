@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Applications · Job Portal{% endblock %}
+{% block content %}
+<h3 class="mb-3">Applications</h3>
+<ul class="list-group">
+  {% for a in applications %}
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    <div>
+      <a href="{% url 'jobs:job_detail' a.job.pk %}"><strong>{{ a.job.title }}</strong></a>
+      <div class="small text-muted">{{ a.job.company }} — {{ a.created_at|date:'Y-m-d H:i' }}</div>
+    </div>
+    <span class="badge text-bg-secondary">{{ a.get_status_display }}</span>
+    {% if user.role == 'applicant' and a.status != 'withdrawn' %}
+      <a class="btn btn-sm btn-outline-danger" href="{% url 'jobs:withdraw' a.pk %}">Withdraw</a>
+    {% endif %}
+  </li>
+  {% empty %}
+  <li class="list-group-item text-muted">No applications.</li>
+  {% endfor %}
+</ul>
+{% include 'partials/_pagination.html' %}
+{% endblock %}

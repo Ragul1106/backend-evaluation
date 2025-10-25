@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Jobs · Job Portal{% endblock %}
+{% block content %}
+<h3 class="mb-3">Browse Jobs</h3>
+<form method="get" class="row g-2 mb-3">
+  <div class="col-md-4">{{ form.q|as_crispy_field }}</div>
+  <div class="col-md-4">{{ form.location|as_crispy_field }}</div>
+  <div class="col-md-2 d-grid">
+    <button class="btn btn-primary">Search</button>
+  </div>
+</form>
+
+<div class="list-group">
+  {% for job in jobs %}
+    <a class="list-group-item list-group-item-action" href="{% url 'jobs:job_detail' job.pk %}">
+      <div class="d-flex w-100 justify-content-between">
+        <h5 class="mb-1">{{ job.title }}</h5>
+        <small class="text-muted">{{ job.created_at|date:'Y-m-d' }}</small>
+      </div>
+      <p class="mb-1">{{ job.company }} — {{ job.location }}</p>
+      <small class="text-muted">Posted by {{ job.poster.username }}</small>
+    </a>
+  {% empty %}
+    <div class="text-muted">No jobs found.</div>
+  {% endfor %}
+</div>
+
+{% include 'partials/_pagination.html' %}
+{% endblock %}

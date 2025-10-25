@@ -1,0 +1,20 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h2>Attendance entry</h2>
+<form method="post">{% csrf_token %}
+  {{ form.as_p }}
+  <button class="btn btn-success">Save</button>
+</form>
+
+<h4 class="mt-3">Recent</h4>
+<table class="table table-sm">
+  <thead><tr><th>Date</th><th>Student</th><th>Course</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for a in recent %}
+      <tr><td>{{ a.date }}</td><td>{{ a.student }}</td><td>{{ a.course }}</td><td>{{ a.present|yesno:"Present,Absent" }}</td></tr>
+    {% empty %}
+      <tr><td colspan="4">No recent attendance</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

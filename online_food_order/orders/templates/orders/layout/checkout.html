@@ -1,0 +1,77 @@
+{% extends 'orders/layout/base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block title %}Checkout | FoodOrder{% endblock %}
+
+{% block content %}
+
+<div class="card shadow-sm p-4 mx-auto" style="max-width: 700px;">
+  <h3 class="mb-3 text-center">Checkout</h3>
+  <p class="text-muted text-center">Total payable: <strong>₹{{ total }}</strong></p>
+
+  <form method="post" id="checkout-form" class="row g-3 mt-3">
+    {% csrf_token %}
+
+    <!-- Name -->
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">{{ form.name.label }}</label>
+      {{ form.name|add_class:"form-control" }}
+      {% if form.name.errors %}<div class="text-danger small mt-1">{{ form.name.errors.0 }}</div>{% endif %}
+    </div>
+
+    <!-- Email -->
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">{{ form.email.label }}</label>
+      {{ form.email|add_class:"form-control" }}
+      {% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>{% endif %}
+    </div>
+
+    <!-- Phone -->
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">{{ form.phone.label }}</label>
+      {{ form.phone|add_class:"form-control" }}
+      {% if form.phone.errors %}<div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>{% endif %}
+    </div>
+
+    <!-- Pincode -->
+    <div class="col-md-6">
+      <label class="form-label fw-semibold">{{ form.pincode.label }}</label>
+      {{ form.pincode|add_class:"form-control" }}
+      {% if form.pincode.errors %}<div class="text-danger small mt-1">{{ form.pincode.errors.0 }}</div>{% endif %}
+    </div>
+
+    <!-- Address -->
+    <div class="col-12">
+      <label class="form-label fw-semibold">{{ form.address.label }}</label>
+      {{ form.address|add_class:"form-control" }}
+      {% if form.address.errors %}<div class="text-danger small mt-1">{{ form.address.errors.0 }}</div>{% endif %}
+    </div>
+
+    <!-- City -->
+    <div class="col-md-12">
+      <label class="form-label fw-semibold">{{ form.city.label }}</label>
+      {{ form.city|add_class:"form-control" }}
+      {% if form.city.errors %}<div class="text-danger small mt-1">{{ form.city.errors.0 }}</div>{% endif %}
+    </div>
+
+    <!-- Payment Method -->
+    <div class="col-12">
+      <label class="form-label fw-semibold d-block">Payment method</label>
+      <div class="ms-1">
+        {{ form.payment_method }}
+      </div>
+      {% if form.payment_method.errors %}<div class="text-danger small mt-1">{{ form.payment_method.errors.0 }}</div>{% endif %}
+      <small class="text-muted d-block mt-2">
+        • <b>Card (Stripe)</b>: Pay securely online. <br>
+        • <b>Cash on Delivery</b>: Pay at your doorstep.
+      </small>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="col-12 text-center mt-3">
+      <button class="btn btn-primary px-4 py-2">Place Order</button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

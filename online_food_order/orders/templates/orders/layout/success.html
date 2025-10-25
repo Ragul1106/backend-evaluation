@@ -1,0 +1,32 @@
+{% extends 'orders/layout/base.html' %}
+{% block title %}Order Success | FoodOrder{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+  <div class="card shadow-lg border-0 p-4 text-center" style="max-width: 500px; border-radius: 20px;">
+    
+    {% if payment_status == 'cod' %}
+      <div class="mb-3">
+        <div class="display-4 text-success">🧾</div>
+        <h3 class="fw-bold text-dark mt-2">Order Placed Successfully!</h3>
+        <p class="text-muted">Your order <strong>#{{ order.id }}</strong> has been placed.<br> Please keep cash ready upon delivery.</p>
+      </div>
+    {% else %}
+      <div class="mb-3">
+        <div class="display-4 text-success">🎉</div>
+        <h3 class="fw-bold text-dark mt-2">Payment {{ payment_status|upper }}!</h3>
+        <p class="text-muted">Your order <strong>#{{ order.id }}</strong> has been recorded successfully.</p>
+      </div>
+    {% endif %}
+    
+    <a href="{% url 'orders:menu' %}" class="btn btn-lg btn-outline-primary mt-3 rounded-pill px-4">
+      🍽️ Order More
+    </a>
+
+    <div class="mt-4">
+      <small class="text-muted">Thank you for choosing <strong>SSFoodOrder</strong> ❤️</small>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

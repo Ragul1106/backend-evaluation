@@ -1,0 +1,41 @@
+body { scroll-behavior: smooth; }
+.card-img-top { object-fit: cover; height: 180px; }
+
+.custom-navbar {
+  background: linear-gradient(90deg, #ec407a, #f06292);
+  transition: background 0.3s ease;
+}
+
+.custom-navbar .nav-link:hover,
+.custom-navbar .navbar-brand:hover {
+  color: #000000 !important; 
+}
+
+.custom-footer {
+  background: linear-gradient(90deg, #f48fb1, #f06292);
+}
+
+
+/* Mobile & Tablet adjustments */
+@media (max-width: 991.98px) { /* Below lg breakpoint */
+    .custom-navbar .navbar-nav {
+        text-align: center;
+    }
+
+    .custom-navbar .nav-item {
+        margin: 0.5rem 0;
+    }
+
+    .custom-navbar .btn {
+        width: auto;
+        margin: 0.3rem 0;
+    }
+}
+
+/* Optional: Adjust the cart badge on mobile */
+@media (max-width: 575.98px) { /* Extra small screens */
+    .custom-navbar .position-absolute {
+        font-size: 0.7rem;
+    }
+}
+
