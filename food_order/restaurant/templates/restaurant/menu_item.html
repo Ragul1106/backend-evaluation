@@ -1,0 +1,35 @@
+{% extends "restaurant/base.html" %}
+{% load static %}
+{% block title %}{{ item.name }} — Menu Item{% endblock %}
+
+{% block content %}
+<div class="menu-item-page" style="max-width: 600px; margin: 2rem auto; padding: 1.5rem; background: #fff; border-radius: 8px; box-shadow: 0 0 6px rgba(0,0,0,0.1);">
+
+  <!-- Item Image -->
+  {% if item.image %}
+    <img src="{{ item.image.url }}" alt="{{ item.name }}" style="width:100%; height:auto; border-radius:6px;">
+  {% else %}
+    <img src="{% static 'restaurant/no-image.png' %}" alt="No image available" style="width:100%; height:auto; border-radius:6px;">
+  {% endif %}
+
+  <!-- Item Info -->
+  <h2 style="margin-top: 1rem;">{{ item.name }}</h2>
+  <p style="color: #555;">{{ item.description|default:"No description available." }}</p>
+  <p style="font-size: 1.2rem; font-weight: bold;">₹{{ item.price }}</p>
+
+  <!-- Add to Cart -->
+  {% if item.is_available %}
+    <a href="{% url 'restaurant:add_to_cart' item.id %}" 
+       style="display:inline-block; padding: 10px 20px; background:#4CAF50; color:#fff; border-radius:4px; text-decoration:none;">
+       🛒 Add to Cart
+    </a>
+  {% else %}
+    <button disabled style="padding:10px 20px; background:#ccc; border:none; border-radius:4px;">Not Available</button>
+  {% endif %}
+
+  <!-- Back link -->
+  <div style="margin-top:1rem;">
+    <a href="{% url 'restaurant:menu_by_restaurant' item.restaurant.id %}" style="color:#007bff; text-decoration:none;">← Back to Menu</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,9 +1,0 @@
-{% extends 'orders/layout/base.html' %}
-{% block title %}Payment canceled | FoodOrder{% endblock %}
-{% block content %}
-  <div class="text-center py-5">
-    <h2>Payment canceled</h2>
-    <p>No worries—your cart is still there.</p>
-    <a href="{% url 'orders:cart' %}" class="btn btn-secondary">Back to cart</a>
-  </div>
-{% endblock %}

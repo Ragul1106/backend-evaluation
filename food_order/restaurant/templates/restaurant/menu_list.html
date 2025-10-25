@@ -1,0 +1,214 @@
+{% extends "restaurant/base.html" %}
+{% load static %}
+
+{% block title %}
+  {% if restaurant %}{{ restaurant.name }}{% else %}Restaurants{% endif %} — Food Ordering
+{% endblock %}
+
+{% block content %}
+
+<!-- Inline CSS to quickly improve layout without touching external files -->
+<style>
+  /* small inline overrides for this page */
+  .hero {
+    background: linear-gradient(90deg, rgba(37,99,235,0.08), rgba(99,102,241,0.04));
+    border: 1px solid rgba(15,23,42,0.03);
+    padding: 1rem;
+    border-radius: 10px;
+    display:flex;
+    gap:1rem;
+    align-items: center;
+    margin-bottom: 1.25rem;
+  }
+  .hero img { width:96px; height:96px; object-fit:cover; border-radius:8px; }
+  .hero .meta { flex:1; }
+  .hero h1 { margin:0; font-size:1.25rem; color:#0f172a; }
+  .hero p { margin:6px 0 0; color:#475569; font-size:0.95rem; }
+
+  .controls {
+    display:flex;
+    gap:0.75rem;
+    margin: 1rem 0;
+    align-items:center;
+  }
+  .search {
+    flex:1;
+    display:flex;
+    gap:0.5rem;
+  }
+  .search input {
+    flex:1;
+    padding:0.5rem 0.75rem;
+    border:1px solid #e6e9ef;
+    border-radius:6px;
+  }
+  .search button { padding:0.55rem 0.9rem; border-radius:6px; border:none; background:#2563eb; color:#fff; cursor:pointer; }
+
+  .featured {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap:0.9rem;
+    margin-bottom:1.25rem;
+  }
+  .card {
+    background:#fff;
+    padding:0.9rem;
+    border-radius:10px;
+    box-shadow:0 4px 10px rgba(2,6,23,0.04);
+  }
+  .card img { width:100%; height:120px; object-fit:cover; border-radius:6px; margin-bottom:0.6rem; }
+
+  section { margin-bottom:1rem; }
+  section h3 { color:#0f172a; margin-bottom:0.6rem; }
+  section ul { list-style:none; padding:0; margin:0; }
+  section ul li {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:0.55rem 0; border-bottom:1px solid #f1f5f9;
+  }
+  .item-meta { display:flex; gap:0.8rem; align-items:center; }
+  .item-meta .title { font-weight:600; color:#0f172a; }
+  .item-meta .desc { color:#64748b; font-size:0.92rem; }
+
+  .add-link {
+    text-decoration:none;
+    background:#10b981;
+    color:#fff;
+    padding:6px 10px;
+    border-radius:6px;
+    font-size:0.95rem;
+  }
+
+  .empty-msg { color:#64748b; padding:1rem; background:#fbfdff; border-radius:8px; }
+
+  footer.page-footer {
+    margin-top:2rem; padding-top:1rem; border-top:1px solid #eef2ff; color:#475569; font-size:0.95rem;
+  }
+</style>
+
+{% if restaurant %}
+  <div class="hero">
+   
+    <div class="meta">
+      <h1>{{ restaurant.name }}</h1>
+      <p>{{ restaurant.address|default:"Address not set" }} • {{ restaurant.phone|default:"No phone" }}</p>
+      <p style="font-size:0.88rem; margin-top:6px;">Open • Fast delivery • Hygienic kitchen — enjoy your meal!</p>
+    </div>
+
+    <div style="text-align:right;">
+      <a href="{% url 'restaurant:cart' %}" class="add-link" style="display:inline-block; background:#3b82f6;">View Cart</a>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="search">
+      <form method="get" action="">
+        <input type="search" name="q" placeholder="Search dishes (e.g. biryani, paneer)..." value="{{ request.GET.q|default:'' }}">
+        <button type="submit">Search</button>
+      </form>
+    </div>
+
+    <div>
+      <a href="#all-categories" class="add-link" style="background:#2563eb;">All Categories</a>
+    </div>
+  </div>
+
+  <h3>Featured</h3>
+  <div class="featured">
+    {% for cat in categories %}
+      {% for it in cat.items.all|slice:":2" %}
+        {% if it.is_available %}
+          <div class="card">
+            {% if it.image %}
+              <img src="{{ it.image.url }}" alt="{{ it.name }}">
+            {% else %}
+              <img src="{% static 'restaurant/no-image.png' %}" alt="no image">
+            {% endif %}
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-weight:700;">{{ it.name }}</div>
+                <div style="color:#64748b; font-size:0.92rem;">{{ it.description|truncatechars:60 }}</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-weight:700; margin-bottom:6px;">₹{{ it.price }}</div>
+                <a href="{% url 'restaurant:add_to_cart' it.id %}" class="add-link">Add</a>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  </div>
+
+  <a id="all-categories"></a>
+  {% for cat in categories %}
+    <section>
+      <h3>{{ cat.name }}</h3>
+      {% if cat.items.all %}
+        <ul>
+          {% for item in cat.items.all %}
+            {% if item.is_available %}
+              <li>
+                <div class="item-meta">
+                  <div>
+                    <div class="title">{{ item.name }}</div>
+                    <div class="desc">{{ item.description|truncatechars:80 }}</div>
+                  </div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-weight:700; margin-bottom:6px;">₹{{ item.price }}</div>
+                  <a href="{% url 'restaurant:menu_item' item.id %}" style="margin-right:8px; color:#2563eb; text-decoration:none;">Details</a>
+                  <a href="{% url 'restaurant:add_to_cart' item.id %}" class="add-link">Add</a>
+                </div>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="empty-msg">No items in this category yet.</div>
+      {% endif %}
+    </section>
+  {% empty %}
+    <p class="empty-msg">No categories yet for this restaurant.</p>
+  {% endfor %}
+
+  <footer class="page-footer">
+    <strong>Tip:</strong> Click <em>Add</em> to put an item into your cart. Then click <a href="{% url 'restaurant:cart' %}">View Cart</a> to checkout.
+  </footer>
+
+{% else %}
+  <div style="display:flex; gap:1rem; align-items:center; margin-bottom:1rem;">
+    <div>
+      <h1 style="margin:0 0 6px;">Find tasty food nearby</h1>
+      <p style="color:#64748b; margin:0;">Browse restaurants, view menus and place orders in a few clicks.</p>
+    </div>
+  </div>
+
+  <div style="margin-bottom:1rem;">
+    <form method="get">
+      <input type="search" name="q" placeholder="Search restaurants (e.g. pizza, biryani)..." style="width:100%; padding:0.6rem; border-radius:8px; border:1px solid #e6eefb;">
+    </form>
+  </div>
+
+  <section>
+    <h3>Restaurants</h3>
+    <ul>
+      {% for r in restaurants %}
+        <li style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid #f1f5f9;">
+          <div>
+            <a href="{% url 'restaurant:menu_by_restaurant' r.id %}" style="font-weight:700; color:#0f172a;">{{ r.name }}</a>
+            <div style="color:#64748b; font-size:0.92rem;">{{ r.address|default:"Address not set" }}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="color:#64748b; font-size:0.92rem;">Open • 30–40 mins</div>
+            <a href="{% url 'restaurant:menu_by_restaurant' r.id %}" class="add-link" style="margin-top:6px;">View menu</a>
+          </div>
+        </li>
+      {% empty %}
+        <li class="empty-msg">No restaurants added yet.</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+{% endif %}
+
+{% endblock %}

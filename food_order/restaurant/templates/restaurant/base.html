@@ -1,0 +1,22 @@
+{% load static %}
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Food Order{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'restaurant/styles.css' %}">
+</head>
+<body>
+  <header>
+    <h1><a href="{% url 'restaurant:menu' %}">Food Ordering</a></h1>
+    <nav><a href="{% url 'restaurant:cart' %}">Cart</a></nav>
+    {% if messages %}
+      <ul class="messages">{% for msg in messages %}<li>{{ msg }}</li>{% endfor %}</ul>
+    {% endif %}
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer>© {{ timezone.now.year }}</footer>
+</body>
+</html>

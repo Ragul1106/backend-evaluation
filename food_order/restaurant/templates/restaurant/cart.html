@@ -1,0 +1,128 @@
+{% extends "restaurant/base.html" %}
+{% load static %}
+
+{% block title %}Your Cart — Food Ordering{% endblock %}
+
+{% block content %}
+<style>
+  .cart-wrapper { max-width:900px; margin:1.5rem auto; display:grid; gap:1rem; }
+  .cart-card { background:#fff; padding:1rem; border-radius:10px; box-shadow:0 4px 12px rgba(2,6,23,0.04); }
+  .cart-header { display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+  .cart-items { list-style:none; padding:0; margin-top:1rem; display:flex; flex-direction:column; gap:0.75rem; }
+  .cart-item { display:flex; gap:0.9rem; align-items:center; justify-content:space-between; padding:0.6rem; border-radius:8px; border:1px solid #f1f5f9; }
+  .item-left { display:flex; gap:0.8rem; align-items:center; min-width:0; }
+  .item-thumb { width:72px; height:56px; object-fit:cover; border-radius:6px; background:#f3f4f6; flex-shrink:0; }
+  .item-meta { min-width:0; }
+  .item-name { font-weight:700; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:260px; }
+  .item-desc { color:#64748b; font-size:0.92rem; }
+  .item-controls { text-align:right; display:flex; flex-direction:column; gap:6px; align-items:flex-end; }
+  .qty-box { display:inline-flex; align-items:center; gap:6px; border-radius:6px; padding:4px; border:1px solid #e6eefb; }
+  .qty-box a { padding:6px 8px; text-decoration:none; background:#eef2ff; color:#0f172a; border-radius:6px; font-weight:600; }
+  .remove-link { color:#ef4444; text-decoration:none; font-size:0.92rem; }
+  .summary { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-top:0.75rem; }
+  .total { font-size:1.25rem; font-weight:800; }
+  .actions { display:flex; gap:0.6rem; align-items:center; }
+  .btn-primary { background:#2563eb; color:#fff; padding:0.6rem 1rem; border-radius:8px; text-decoration:none; }
+  .btn-muted { background:#f1f5f9; color:#0f172a; padding:0.55rem 0.9rem; border-radius:8px; text-decoration:none; }
+  .empty { text-align:center; padding:2rem; color:#64748b; }
+  @media (max-width:600px) {
+    .item-name { max-width:140px; }
+    .cart-wrapper { padding:0 0.6rem; }
+  }
+</style>
+
+<div class="cart-wrapper">
+
+  <div class="cart-card">
+    <div class="cart-header">
+      <div>
+        <h2 style="margin:0;">Your cart</h2>
+        {% if items %}
+          {% comment %} show restaurant name from the first item if available {% endcomment %}
+          {% if items.0.menu_item.restaurant %}
+            <div style="color:#64748b; font-size:0.95rem;">Restaurant: <strong>{{ items.0.menu_item.restaurant.name }}</strong></div>
+          {% endif %}
+        {% endif %}
+      </div>
+
+      <div>
+        <a href="{% url 'restaurant:menu' %}" class="btn-muted">Continue shopping</a>
+      </div>
+    </div>
+
+    {% if items %}
+      <ul class="cart-items">
+        {% for it in items %}
+          <li class="cart-item">
+            <div class="item-left">
+              {% if it.menu_item.image %}
+                <img src="{{ it.menu_item.image.url }}" alt="{{ it.menu_item.name }}" class="item-thumb">
+              {% else %}
+                <img src="{% static 'restaurant/no-image.png' %}" alt="no image" class="item-thumb">
+              {% endif %}
+              <div class="item-meta">
+                <div class="item-name">{{ it.menu_item.name }}</div>
+                {% if it.menu_item.description %}
+                  <div class="item-desc">{{ it.menu_item.description|truncatechars:80 }}</div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="item-controls">
+              <div style="font-weight:700;">₹{{ it.menu_item.price }} <span style="color:#64748b; font-weight:600; font-size:0.95rem;">× {{ it.quantity }}</span></div>
+
+              <div style="display:flex; gap:8px; align-items:center;">
+                <!-- + button adds one more using your existing add_to_cart view -->
+                <div class="qty-box" aria-hidden="true">
+                  <a href="{% url 'restaurant:add_to_cart' it.menu_item.id %}">＋</a>
+                  <span style="padding:0 6px;">{{ it.quantity }}</span>
+                  <!-- Remove link removes whole line -->
+                  <a href="{% url 'restaurant:remove_from_cart' it.menu_item.id %}" class="remove-link" onclick="return confirmRemove(event, '{{ it.menu_item.name|escapejs }}')">Remove</a>
+                </div>
+              </div>
+
+              <div style="color:#0f172a; font-weight:600;">₹{{ it.line_total }}</div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <div class="summary">
+        <div style="color:#475569;">Estimated delivery time: <strong>30–40 mins</strong></div>
+        <div style="text-align:right;">
+          <div class="total">Total: ₹{{ total }}</div>
+          <div class="actions" style="margin-top:0.6rem;">
+            {% comment %} If your checkout url needs a restaurant id, derive it from the first item safely {% endcomment %}
+            {% if items.0.menu_item.restaurant %}
+              <a href="{% url 'restaurant:checkout' items.0.menu_item.restaurant.id %}" class="btn-primary">Checkout ₹{{ total }}</a>
+            {% else %}
+              <a class="btn-primary" style="opacity:0.6; pointer-events:none;">Checkout</a>
+            {% endif %}
+            <a href="{% url 'restaurant:menu' %}" class="btn-muted">Continue shopping</a>
+          </div>
+        </div>
+      </div>
+
+    {% else %}
+      <div class="empty">
+        <p style="font-size:1.05rem; margin-bottom:0.5rem;">Your cart is empty.</p>
+        <p>Add items from the menu to place an order.</p>
+        <div style="margin-top:1rem;">
+          <a href="{% url 'restaurant:menu' %}" class="btn-primary">Browse restaurants</a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+
+<script>
+  function confirmRemove(e, name) {
+    if (!confirm('Remove \"' + name + '\" from cart?')) {
+      e.preventDefault();
+      return false;
+    }
+    return true;
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends "restaurant/base.html" %}
+{% load static %}
+
+{% block title %}Checkout — {{ restaurant.name }}{% endblock %}
+
+{% block content %}
+<style>
+  .checkout-wrap { max-width:900px; margin:1.5rem auto; display:grid; gap:1rem; padding:0 0.5rem; }
+  .card { background:#fff; padding:1rem; border-radius:10px; box-shadow:0 6px 18px rgba(2,6,23,0.04); }
+  .grid-2 { display:grid; grid-template-columns: 1fr 360px; gap:1rem; }
+  @media (max-width:880px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  h2 { margin:0 0 0.5rem 0; }
+  .messages li { margin-bottom:0.6rem; }
+
+  /* Order summary */
+  .summary-table { width:100%; border-collapse:collapse; margin-top:0.75rem; }
+  .summary-table th, .summary-table td { padding:0.6rem 0.5rem; text-align:left; border-bottom:1px solid #f1f5f9; }
+  .summary-table th { color:#475569; font-weight:600; font-size:0.95rem; }
+  .summary-right { text-align:right; color:#111827; font-weight:700; }
+
+  /* Delivery form */
+  form .form-row { margin-bottom:0.85rem; }
+  form label { display:block; margin-bottom:0.25rem; color:#374151; font-weight:600; font-size:0.95rem; }
+  form input, form textarea {
+    width:100%; padding:0.6rem 0.75rem; border-radius:8px; border:1px solid #e6eefb; font-size:0.95rem;
+  }
+  .small-muted { color:#6b7280; font-size:0.92rem; margin-top:0.25rem; }
+
+  .actions { display:flex; gap:0.6rem; align-items:center; margin-top:0.75rem; }
+  .btn { background:#2563eb; color:#fff; padding:0.6rem 1rem; border-radius:8px; border:none; cursor:pointer; font-weight:700; }
+  .btn[disabled] { opacity:0.55; cursor:not-allowed; }
+  .link-muted { background:#f1f5f9; color:#0f172a; padding:0.55rem 0.9rem; border-radius:8px; text-decoration:none; }
+
+  .meta { color:#6b7280; font-size:0.95rem; margin-bottom:0.5rem; }
+  .success-note { background:#ecfdf5; border:1px solid #bbf7d0; color:#065f46; padding:0.9rem; border-radius:8px; margin-bottom:0.75rem; }
+
+  .empty { text-align:center; padding:1rem; color:#64748b; background:#fbfdff; border-radius:8px; }
+</style>
+
+<div class="checkout-wrap">
+
+  <div class="card">
+    <h2>Checkout — {{ restaurant.name }}</h2>
+    <div class="meta">
+      {{ restaurant.address|default:"Address not set" }} • {{ restaurant.phone|default:"No phone" }}
+    </div>
+
+    {% if messages %}
+      <ul class="messages">
+        {% for msg in messages %}
+          <li>{{ msg }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+
+  <div class="grid-2">
+    <!-- Left: Order summary -->
+    <div class="card">
+      <h3 style="margin-top:0;">Order summary</h3>
+
+      {% if items %}
+        <table class="summary-table" aria-describedby="order-total">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th style="width:110px;">Qty</th>
+              <th style="width:120px;" class="summary-right">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for it in items %}
+              <tr>
+                <td>
+                  <div style="font-weight:700;">{{ it.menu_item.name }}</div>
+                  {% if it.menu_item.description %}
+                    <div class="small-muted">{{ it.menu_item.description|truncatechars:70 }}</div>
+                  {% endif %}
+                </td>
+                <td>{{ it.quantity }}</td>
+                <td class="summary-right">₹{{ it.line_total }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div style="display:flex; justify-content:flex-end; margin-top:0.85rem; gap:1rem; align-items:center;">
+          <div class="small-muted">Total</div>
+          <div id="order-total" style="font-weight:900; font-size:1.15rem;">₹{{ total }}</div>
+        </div>
+
+      {% else %}
+        <div class="empty">
+          <p>Your cart is empty.</p>
+          <a href="{% url 'restaurant:menu_by_restaurant' restaurant.id %}" class="link-muted" style="display:inline-block; margin-top:0.6rem;">Browse menu</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Right: Delivery details & Pay -->
+    <div class="card">
+      <h3 style="margin-top:0;">Delivery details</h3>
+
+      {% if items %}
+        <form method="post" id="checkout-form" onsubmit="return onSubmitPay(event)">
+          {% csrf_token %}
+
+          <div class="form-row">
+            <label for="id_name">Name</label>
+            {{ form.name }}
+          </div>
+
+          <div class="form-row">
+            <label for="id_phone">Phone</label>
+            {{ form.phone }}
+          </div>
+
+          <div class="form-row">
+            <label for="id_address">Address (optional)</label>
+            {{ form.address }}
+          </div>
+
+
+          <div class="actions">
+            <button type="submit" id="pay-btn" class="btn">Pay ₹{{ total }} </button>
+            <a href="{% url 'restaurant:cart' %}" class="link-muted">Back to cart</a>
+          </div>
+        </form>
+      {% else %}
+        <div class="small-muted">Add items to your cart and come back here to checkout.</div>
+      {% endif %}
+    </div>
+  </div>
+
+
+</div>
+
+<script>
+  // prevent double submits and show a simple confirm
+  function onSubmitPay(e) {
+    const payBtn = document.getElementById('pay-btn');
+    if (!payBtn) return true; // allow if no button (shouldn't happen)
+
+    // If cart empty the form isn't shown; guard anyway
+    if (payBtn.disabled) {
+      e.preventDefault();
+      return false;
+    }
+
+    // simple confirm (optional)
+    const ok = confirm('Confirm payment of ₹' + '{{ total }}' + ' and place the order?');
+    if (!ok) {
+      e.preventDefault();
+      return false;
+    }
+
+    // disable to avoid double submit
+    payBtn.disabled = true;
+    payBtn.innerText = 'Processing...';
+    return true;
+  }
+</script>
+{% endblock %}
